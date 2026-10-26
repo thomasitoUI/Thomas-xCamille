@@ -1,0 +1,116 @@
+import React, { useEffect, useState } from 'react';
+import { ArrowDownRight, ArrowUpRight, Menu, X, Settings2, Eye, Save, RotateCcw, Plus, Trash2, Upload, Check, ExternalLink } from 'lucide-react';
+
+const initial = {
+  brand:'THOMAS × CAMILLE',
+  eyebrow:'STUDIO INDÉPENDANT · VENDÉE',
+  headline:'VOTRE LIEU MÉRITE D’ÊTRE VU.',
+  intro:'Nous créons des contenus qui donnent envie de découvrir votre établissement et nous vous accompagnons dans votre communication sur les réseaux sociaux.',
+  services:'PHOTO / VIDÉO / SOCIAL',
+  area:'LES SABLES-D’OLONNE — LA ROCHE-SUR-YON',
+  camilleTitle:'Communauté & stratégie',
+  camilleText:'Je crée la symbiose entre vous et votre communauté. Fondatrice de Tapasdamis, je connais la force des rencontres, des lieux et des histoires partagées.',
+  thomasTitle:'Image & direction artistique',
+  thomasText:'Designer graphique et directeur artistique, je donne une forme juste à votre univers grâce à la photographie, la vidéo et une identité cohérente.',
+  boostName:'LE BOOST LOCAL',
+  boostPrice:'1 200 €',
+  boostUnit:'HT / mois',
+  boostDesc:'Une présence régulière, cohérente et reconnaissable pour faire vivre votre établissement en ligne.',
+  boostItems:'Une demi-journée de création sur place\n4 vidéos verticales montées\n15 photos retouchées\n8 publications préparées\nStratégie éditoriale et programmation sur 2 réseaux\nUn bilan mensuel',
+  shootName:'LE SHOOTING DÉCOUVERTE',
+  shootPrice:'350 €',
+  shootUnit:'HT · forfait unique',
+  shootDesc:'Un premier kit de contenus pour révéler l’atmosphère et les détails qui rendent votre lieu singulier.',
+  shootItems:'1 h 30 de shooting\n2 vidéos verticales montées\n8 photos retouchées\nUne proposition de feed Instagram',
+  caseName:'LA KASBAH',
+  caseText:'Un lieu, une ambiance, des détails. Une galerie de contenus conçue pour transmettre l’expérience avant même la première visite.',
+  contactTitle:'ON RACONTE VOTRE HISTOIRE ?',
+  contactText:'Parlons de votre lieu, de vos envies et de ce que nous pouvons créer ensemble.',
+  whatsapp:'',
+  bookingUrl:'',
+  email:'',
+  instagram:'',
+  footer:'Deux professionnels indépendants réunis autour d’une même ambition : raconter les lieux avec justesse.',
+  heroImage:'',
+  camilleImage:'',
+  thomasImage:'',
+  caseImage:'',
+  caseImage2:'',
+  caseImage3:'',
+  logoImage:'',
+  faviconImage:'',
+  ogImage:'',
+  accent:'#d74732',
+  paper:'#f4f1e9',
+  ink:'#171715',
+  maxWidth:'1240',
+  font:'Arial',
+  spacing:'normal',
+  showCase:'true',
+  showDuo:'true',
+  showOffers:'true',
+  showFit:'true'
+};
+const readSettings = () => { try { return {...initial, ...JSON.parse(localStorage.getItem('txc-settings') || '{}')}; } catch { return initial; } };
+const fieldLabels = {
+ brand:'Nom / signature', eyebrow:'Surtitre', headline:'Titre principal', intro:'Introduction', services:'Services', area:'Zone géographique',
+ camilleTitle:'Titre de Camille', camilleText:'Présentation de Camille', thomasTitle:'Titre de Thomas', thomasText:'Présentation de Thomas',
+ boostName:'Nom de l’offre mensuelle', boostPrice:'Prix de l’offre mensuelle', boostUnit:'Unité / mention du prix', boostDesc:'Description de l’offre mensuelle', boostItems:'Prestations (une par ligne)',
+ shootName:'Nom du shooting', shootPrice:'Prix du shooting', shootUnit:'Unité / mention du prix', shootDesc:'Description du shooting', shootItems:'Prestations (une par ligne)',
+ caseName:'Nom du projet', caseText:'Description du projet', contactTitle:'Titre du contact', contactText:'Texte de contact', whatsapp:'Lien WhatsApp (URL complète)', bookingUrl:'Lien de réservation', email:'Adresse e-mail', instagram:'Lien Instagram', footer:'Texte de pied de page',
+ heroImage:'Image principale (URL)', camilleImage:'Portrait de Camille (URL)', thomasImage:'Portrait de Thomas (URL)', caseImage:'Image projet 1 (URL)', caseImage2:'Image projet 2 (URL)', caseImage3:'Image projet 3 (URL)', logoImage:'Logo (URL)', faviconImage:'Favicon (URL)', ogImage:'Image de partage (URL)'
+};
+function App() {
+ const [data,setData] = useState(readSettings);
+ const [admin,setAdmin] = useState(window.location.hash === '#admin');
+ const [mobile,setMobile] = useState(false);
+ const [saved,setSaved] = useState(true);
+ const [tab,setTab] = useState('content');
+ const [notice,setNotice] = useState('');
+ useEffect(()=>{const onHash=()=>setAdmin(window.location.hash==='#admin');window.addEventListener('hashchange',onHash);return()=>window.removeEventListener('hashchange',onHash)},[]);
+ useEffect(()=>{document.title = data.brand.replace('THOMAS','Thomas').replace('CAMILLE','Camille')+' — Studio de contenu';},[data.brand]);
+ const change=(key,value)=>{setData(prev=>({...prev,[key]:value}));setSaved(false)};
+ const save=()=>{try{localStorage.setItem('txc-settings',JSON.stringify(data));setSaved(true);setNotice('Modifications enregistrées sur cet appareil.');setTimeout(()=>setNotice(''),3500)}catch{setNotice('Stockage plein : privilégiez des images hébergées et leurs URL.')}};
+ const reset=()=>{if(confirm('Réinitialiser tout le contenu aux valeurs initiales ?')){setData(initial);localStorage.removeItem('txc-settings');setSaved(true)}};
+ const upload=(key,file)=>{if(!file)return;const reader=new FileReader();reader.onload=()=>change(key,String(reader.result));reader.readAsDataURL(file)};
+ const goAdmin=()=>{window.location.hash='admin';setAdmin(true)};
+ const leaveAdmin=()=>{window.location.hash='';setAdmin(false)};
+ const list=(key)=>data[key].split('\n').map(s=>s.trim()).filter(Boolean);
+ const contactHref=data.whatsapp || (data.email ? 'mailto:'+data.email : '#contact');
+ const imageStyle=(src)=>src?{backgroundImage:'url("'+src+'")'}:{};
+ const ImageBlock=({src,alt,cls=''})=><div className={'image-block '+cls} role="img" aria-label={alt} style={imageStyle(src)}>{!src&&<span>{alt}</span>}</div>;
+ if(admin) return <div className="admin-shell">
+  <aside className="admin-side">
+   <a className="admin-brand" href="#" onClick={leaveAdmin}>{data.brand}<small>STUDIO CONTROL</small></a>
+   <div className="admin-status"><span className={saved?'dot':'dot dirty'} />{saved?'Tout est enregistré':'Modifications non enregistrées'}</div>
+   <nav className="admin-nav">
+    {[['content','Contenu éditorial'],['images','Images & identité'],['offers','Offres commerciales'],['style','Style & mise en page'],['contact','Contact & SEO']].map(([id,label])=><button key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}>{label}</button>)}
+   </nav>
+   <div className="admin-side-bottom"><button className="btn dark full" onClick={save}><Save size={16}/> Enregistrer</button><button className="btn light full" onClick={leaveAdmin}><Eye size={16}/> Voir le site</button></div>
+  </aside>
+  <main className="admin-main">
+   <header className="admin-top"><div><div className="eyebrow">ESPACE ADMINISTRATEUR</div><h1>Votre studio, vos règles.</h1><p>Gérez les textes, visuels, offres et réglages de votre vitrine.</p></div><button className="icon-button" onClick={reset} title="Réinitialiser"><RotateCcw size={18}/></button></header>
+   {notice&&<div className="notice"><Check size={16}/>{notice}</div>}
+   {tab==='content'&&<section className="editor-section"><h2>Contenu éditorial</h2><p className="muted">Les champs alimentent directement la vitrine. Utilisez des phrases courtes et concrètes.</p>{['brand','eyebrow','headline','intro','services','area','camilleTitle','camilleText','thomasTitle','thomasText','caseName','caseText','contactTitle','contactText','footer'].map(k=><label className="form-field" key={k}><span>{fieldLabels[k]}</span>{['intro','camilleText','thomasText','caseText','contactText','footer'].includes(k)?<textarea value={data[k]} onChange={e=>change(k,e.target.value)} rows={3}/>:<input value={data[k]} onChange={e=>change(k,e.target.value)}/>}</label>)}</section>}
+   {tab==='images'&&<section className="editor-section"><h2>Images & identité</h2><p className="muted">Ajoutez une URL d’image ou importez un fichier. Les imports locaux sont conservés dans le stockage de ce navigateur uniquement.</p>{[['heroImage','Visuel principal'],['camilleImage','Portrait de Camille'],['thomasImage','Portrait de Thomas'],['caseImage','Projet — image 1'],['caseImage2','Projet — image 2'],['caseImage3','Projet — image 3'],['logoImage','Logo'],['faviconImage','Favicon'],['ogImage','Image de partage social']].map(([k,label])=><div className="image-editor" key={k}><div className="image-editor-preview" style={imageStyle(data[k])}>{!data[k]&&<span>Aperçu</span>}</div><div className="image-editor-fields"><label className="form-field"><span>{label}</span><input value={data[k].startsWith('data:')?'Image importée':data[k]} disabled={data[k].startsWith('data:')} placeholder="https://…" onChange={e=>change(k,e.target.value)}/></label><label className="upload-btn"><Upload size={15}/> Importer une image<input type="file" accept="image/*" onChange={e=>upload(k,e.target.files?.[0])}/></label>{data[k]&&<button className="text-button" onClick={()=>change(k,'')}>Retirer l’image</button>}</div></div>)}</section>}
+   {tab==='offers'&&<section className="editor-section"><h2>Offres commerciales</h2><p className="muted">Les prestations s’affichent une par ligne. Adaptez le périmètre exact avant publication.</p>{[['boostName','boostPrice','boostUnit','boostDesc','boostItems','Offre mensuelle'],['shootName','shootPrice','shootUnit','shootDesc','shootItems','Shooting découverte']].map(([name,price,unit,desc,items,title])=><div className="offer-editor" key={name}><h3>{title}</h3><label className="form-field"><span>Nom de l’offre</span><input value={data[name]} onChange={e=>change(name,e.target.value)}/></label><div className="two-fields"><label className="form-field"><span>Prix</span><input value={data[price]} onChange={e=>change(price,e.target.value)}/></label><label className="form-field"><span>Unité</span><input value={data[unit]} onChange={e=>change(unit,e.target.value)}/></label></div><label className="form-field"><span>Description</span><textarea rows={2} value={data[desc]} onChange={e=>change(desc,e.target.value)}/></label><label className="form-field"><span>Prestations (une par ligne)</span><textarea rows={6} value={data[items]} onChange={e=>change(items,e.target.value)}/></label></div>)}</section>}
+   {tab==='style'&&<section className="editor-section"><h2>Style & mise en page</h2><p className="muted">Direction artistique Swiss editorial : grille stricte, typographie forte, espaces généreux et accent rouge discret.</p><div className="two-fields">{[['paper','Fond papier'],['ink','Texte principal'],['accent','Couleur accent']].map(([k,label])=><label className="form-field" key={k}><span>{label}</span><div className="color-input"><input type="color" value={data[k]} onChange={e=>change(k,e.target.value)}/><code>{data[k]}</code></div></label>)}</div><label className="form-field"><span>Police système</span><select value={data.font} onChange={e=>change('font',e.target.value)}><option>Arial</option><option>Helvetica</option><option>Georgia</option><option>Verdana</option></select></label><label className="form-field"><span>Largeur du contenu (px)</span><input type="number" min="900" max="1600" value={data.maxWidth} onChange={e=>change('maxWidth',e.target.value)}/></label><div className="toggle-list">{[['showDuo','Afficher la section duo'],['showOffers','Afficher les offres'],['showCase','Afficher le projet La Kasbah'],['showFit','Afficher “Cette offre est faite pour vous”']].map(([k,label])=><label key={k}><span>{label}</span><input type="checkbox" checked={data[k]==='true'} onChange={e=>change(k,String(e.target.checked))}/></label>)}</div><div className="mini-preview" style={{background:data.paper,color:data.ink}}><div className="eyebrow" style={{color:data.accent}}>APERÇU DES COULEURS</div><h3>{data.headline}</h3><button style={{background:data.accent,color:'#fff'}}>Bouton d’action ↗</button></div></section>}
+   {tab==='contact'&&<section className="editor-section"><h2>Contact & référencement</h2><p className="muted">Renseignez uniquement les coordonnées et liens réels. Aucun numéro ou lien n’est prérempli.</p>{['whatsapp','bookingUrl','email','instagram'].map(k=><label className="form-field" key={k}><span>{fieldLabels[k]}</span><input value={data[k]} onChange={e=>change(k,e.target.value)} placeholder={k==='whatsapp'?'https://wa.me/…':k==='email'?'bonjour@…':'https://…'}/></label>)}<div className="form-field"><span>Référencement et partage</span><p className="muted small">Le titre et la description initiale sont définis dans index.html. Les champs de partage (image Open Graph, favicon et nom de site) sont préparés dans Images & identité ; leur publication dans les métadonnées du serveur devra être raccordée au déploiement.</p></div></section>}
+   <div className="admin-actions"><button className="btn light" onClick={leaveAdmin}>Annuler / retour</button><button className="btn dark" onClick={save}><Save size={16}/> Enregistrer les modifications</button></div>
+   <p className="admin-footnote">Prototype d’administration côté navigateur : l’authentification sécurisée, la base de données partagée et l’upload serveur doivent être connectés avant une mise en production multi-utilisateur.</p>
+  </main>
+ </div>;
+ return <div className="site" style={{'--paper':data.paper,'--ink':data.ink,'--accent':data.accent,'--max':data.maxWidth+'px','--font':data.font}}>
+  <header className="site-header wrap"><a className="wordmark" href="#top">{data.logoImage?<img src={data.logoImage} alt={data.brand}/>:data.brand}</a><button className="mobile-menu" onClick={()=>setMobile(!mobile)} aria-label="Ouvrir le menu">{mobile?<X/>:<Menu/>}</button><nav className={mobile?'nav open':'nav'}><a href="#approche" onClick={()=>setMobile(false)}>Approche</a><a href="#offres" onClick={()=>setMobile(false)}>Offres</a><a href="#projet" onClick={()=>setMobile(false)}>Projet</a><a href="#contact" className="nav-cta" onClick={()=>setMobile(false)}>Parlons de vous <ArrowUpRight size={15}/></a></nav></header>
+  <main id="top">
+   <section className="hero wrap"><div className="hero-copy"><p className="eyebrow"><span className="red-dot"/> {data.eyebrow}</p><h1>{data.headline}</h1><p className="hero-intro">{data.intro}</p><div className="hero-actions"><a className="button-primary" href="#contact">Parlons de votre projet <ArrowUpRight size={17}/></a><a className="text-link" href="#approche">Découvrir notre approche <ArrowDownRight size={17}/></a></div><div className="hero-meta"><span>{data.services}</span><span>{data.area}</span></div></div><div className="hero-visual"><ImageBlock src={data.heroImage} alt="Visuel principal du studio" cls="hero-image"/><div className="image-index">01 / IMAGE & ÉMOTION</div><span className="hero-stamp">DU BEAU<br/>DU VRAI.</span></div></section>
+   {data.showDuo==='true'&&<section id="approche" className="duo section-wrap"><div className="section-label"><span>01</span><span>NOTRE APPROCHE</span></div><div className="duo-head"><h2>Des regards<br/><em>complémentaires.</em></h2><p>La bonne image attire l’œil. La bonne histoire donne envie de rester. Nous réunissons les deux.</p></div><div className="people-grid"><article className="person-card"><ImageBlock src={data.camilleImage} alt="Portrait de Camille" cls="person-image"/><div className="person-caption"><span className="eyebrow">CAMILLE</span><h3>{data.camilleTitle}</h3><p>{data.camilleText}</p></div></article><article className="person-card person-offset"><ImageBlock src={data.thomasImage} alt="Portrait de Thomas" cls="person-image"/><div className="person-caption"><span className="eyebrow">THOMAS</span><h3>{data.thomasTitle}</h3><p>{data.thomasText}</p></div></article></div></section>}
+   {data.showOffers==='true'&&<section id="offres" className="offers section-wrap"><div className="section-label"><span>02</span><span>DES FORMATS CLAIRS</span></div><div className="section-heading"><h2>Du contenu qui<br/><em>fait la différence.</em></h2><p>Des formules pensées pour les lieux qui ont quelque chose à raconter.</p></div><div className="offer-grid"><article className="offer-card featured"><div className="offer-top"><span className="eyebrow">ACCOMPAGNEMENT</span><span className="offer-number">A / 01</span></div><h3>{data.boostName}</h3><p className="offer-desc">{data.boostDesc}</p><div className="price">{data.boostPrice}<small>{data.boostUnit}</small></div><ul>{list('boostItems').map((it,i)=><li key={i}>{it}</li>)}</ul><a className="offer-link" href="#contact">Construire mon accompagnement <ArrowUpRight size={16}/></a></article><article className="offer-card"><div className="offer-top"><span className="eyebrow">FORMAT PONCTUEL</span><span className="offer-number">B / 02</span></div><h3>{data.shootName}</h3><p className="offer-desc">{data.shootDesc}</p><div className="price">{data.shootPrice}<small>{data.shootUnit}</small></div><ul>{list('shootItems').map((it,i)=><li key={i}>{it}</li>)}</ul><a className="offer-link" href="#contact">Réserver un premier échange <ArrowUpRight size={16}/></a></article></div><p className="fine-print">Périmètre et modalités confirmés sur devis. Les prestations ne constituent pas une garantie de résultats commerciaux.</p></section>}
+   {data.showCase==='true'&&<section id="projet" className="case-study section-wrap"><div className="section-label"><span>03</span><span>UN APERÇU DU TERRAIN</span></div><div className="case-head"><div><span className="eyebrow">PROJET · RESTAURATION</span><h2>{data.caseName}</h2></div><p>{data.caseText}</p></div><div className="case-gallery"><ImageBlock src={data.caseImage} alt="Projet, image 1" cls="case-img case-img-large"/><ImageBlock src={data.caseImage2} alt="Projet, image 2" cls="case-img"/><ImageBlock src={data.caseImage3} alt="Projet, image 3" cls="case-img"/></div></section>}
+   {data.showFit==='true'&&<section className="fit-section section-wrap"><div className="section-label"><span>04</span><span>EN TOUTE TRANSPARENCE</span></div><div className="fit-grid"><h2>Le bon projet,<br/><em>c’est le vôtre.</em></h2><div className="fit-column"><h3>Cette offre est faite pour vous si…</h3><p>Vous voulez montrer votre lieu tel qu’il est, créer des contenus réguliers et construire une relation sincère avec votre communauté.</p><p>Vous êtes disponible pour partager votre histoire et valider les contenus avec nous.</p></div><div className="fit-column"><h3>Elle ne correspond pas si…</h3><p>Vous cherchez une promesse de ventes garanties ou une communication qui fonctionne sans échange ni implication de votre part.</p><p>Nous préférons une collaboration claire à une promesse impossible à tenir.</p></div></div></section>}
+   <section id="contact" className="contact-section"><div className="section-wrap contact-inner"><div className="section-label"><span>05</span><span>À VOUS DE JOUER</span></div><p className="eyebrow">PHOTO / VIDÉO / SOCIAL</p><h2>{data.contactTitle}</h2><p className="contact-copy">{data.contactText}</p><div className="contact-actions">{data.whatsapp&&<a className="button-primary" href={data.whatsapp} target="_blank" rel="noreferrer">Écrire sur WhatsApp <ArrowUpRight size={17}/></a>}{data.bookingUrl&&<a className="button-outline" href={data.bookingUrl} target="_blank" rel="noreferrer">Prendre rendez-vous <ArrowUpRight size={17}/></a>}{data.email&&<a className="button-outline" href={'mailto:'+data.email}>Envoyer un e-mail <ArrowUpRight size={17}/></a>}{!data.whatsapp&&!data.bookingUrl&&!data.email&&<span className="contact-placeholder">Coordonnées à renseigner dans l’administration.</span>}</div></div></section>
+  </main>
+  <footer className="site-footer wrap"><a className="wordmark" href="#top">{data.brand}</a><p>{data.footer}</p><div className="footer-links">{data.instagram&&<a href={data.instagram} target="_blank" rel="noreferrer">Instagram ↗</a>}<button onClick={goAdmin}><Settings2 size={14}/> Administration</button><span>© {new Date().getFullYear()}</span></div></footer>
+ </div>;
+}
+export default App;
