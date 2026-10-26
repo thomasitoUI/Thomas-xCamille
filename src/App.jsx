@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { ArrowDownRight, ArrowUpRight, Menu, X, Settings2, Eye, Save, RotateCcw, Plus, Trash2, Upload, Check, ExternalLink } from 'lucide-react';
 
 const initial = {
@@ -67,18 +68,29 @@ function App() {
  const [saved,setSaved] = useState(true);
  const [tab,setTab] = useState('content');
  const [notice,setNotice] = useState('');
+ const [session,setSession] = useState(null);
+ const [authLoading,setAuthLoading] = useState(Boolean(supabase));
+ const [loginEmail,setLoginEmail] = useState('');
+ const [loginPassword,setLoginPassword] = useState('');
+ const [authError,setAuthError] = useState('');
+ const isAdmin = session?.user?.app_metadata?.role === 'admin';
  useEffect(()=>{const onHash=()=>setAdmin(window.location.hash==='#admin');window.addEventListener('hashchange',onHash);return()=>window.removeEventListener('hashchange',onHash)},[]);
  useEffect(()=>{document.title = data.brand.replace('THOMAS','Thomas').replace('CAMILLE','Camille')+' — Studio de contenu';},[data.brand]);
+ useEffect(()=>{if(!supabase){setAuthLoading(false);return;}let cancelled=false;supabase.auth.getSession().then(({data,error})=>{if(!cancelled){setSession(data?.session||null);setAuthLoading(false);if(error)setAuthError(error.message)}});const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,nextSession)=>setSession(nextSession));supabase.from('site_settings').select('settings').eq('id','main').maybeSingle().then(({data,error})=>{if(cancelled)return;if(data?.settings)setData({...initial,...data.settings});if(error)setNotice('Impossible de charger la configuration distante. Vérifiez la migration Supabase et les droits de lecture.');});return()=>{cancelled=true;subscription.unsubscribe()}},[]);
  const change=(key,value)=>{setData(prev=>({...prev,[key]:value}));setSaved(false)};
- const save=()=>{try{localStorage.setItem('txc-settings',JSON.stringify(data));setSaved(true);setNotice('Modifications enregistrées sur cet appareil.');setTimeout(()=>setNotice(''),3500)}catch{setNotice('Stockage plein : privilégiez des images hébergées et leurs URL.')}};
- const reset=()=>{if(confirm('Réinitialiser tout le contenu aux valeurs initiales ?')){setData(initial);localStorage.removeItem('txc-settings');setSaved(true)}};
- const upload=(key,file)=>{if(!file)return;const reader=new FileReader();reader.onload=()=>change(key,String(reader.result));reader.readAsDataURL(file)};
+ const save=async()=>{if(supabase){if(!isAdmin){setNotice('Connexion administrateur requise pour enregistrer.');return;}const {error}=await supabase.from('site_settings').upsert({id:'main',settings:data,updated_at:new Date().toISOString()});if(error){setNotice('Enregistrement distant impossible : '+error.message);return;}setSaved(true);setNotice('Modifications publiées et enregistrées.');return;}try{localStorage.setItem('txc-settings',JSON.stringify(data));setSaved(true);setNotice('Enregistré uniquement dans ce navigateur. Configurez Supabase pour publier les modifications pour tous.');}catch{setNotice('Stockage plein : privilégiez des images hébergées et leurs URL.')}};
+ const login=async(e)=>{e.preventDefault();setAuthError('');if(!supabase){setAuthError('Supabase n’est pas configuré.');return;}const {error}=await supabase.auth.signInWithPassword({email:loginEmail,password:loginPassword});if(error)setAuthError('Connexion impossible : '+error.message)};
+ const logout=async()=>{if(supabase)await supabase.auth.signOut();setSession(null)};
+ const reset=()=>{if(confirm('Réinitialiser tout le contenu aux valeurs initiales ?')){setData(initial);if(!supabase)localStorage.removeItem('txc-settings');setSaved(false)}};
+ const upload=async(key,file)=>{if(!file)return;if(supabase){if(!isAdmin){setNotice('Connexion administrateur requise pour importer des images.');return;}const safeName=file.name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]/g,'-');const path=Date.now()+'-'+safeName;const {error}=await supabase.storage.from('site-media').upload(path,file,{upsert:false,contentType:file.type});if(error){setNotice('Import impossible : '+error.message);return;}const {data}=supabase.storage.from('site-media').getPublicUrl(path);change(key,data.publicUrl);setNotice('Image importée. Enregistrez les modifications pour publier.');return;}const reader=new FileReader();reader.onload=()=>change(key,String(reader.result));reader.readAsDataURL(file)};
  const goAdmin=()=>{window.location.hash='admin';setAdmin(true)};
  const leaveAdmin=()=>{window.location.hash='';setAdmin(false)};
  const list=(key)=>data[key].split('\n').map(s=>s.trim()).filter(Boolean);
  const contactHref=data.whatsapp || (data.email ? 'mailto:'+data.email : '#contact');
  const imageStyle=(src)=>src?{backgroundImage:'url("'+src+'")'}:{};
  const ImageBlock=({src,alt,cls=''})=><div className={'image-block '+cls} role="img" aria-label={alt} style={imageStyle(src)}>{!src&&<span>{alt}</span>}</div>;
+ if(admin && supabase && authLoading) return <main className="auth-screen"><p className="eyebrow">THOMAS × CAMILLE</p><h1>Vérification de la session…</h1></main>;
+ if(admin && supabase && !isAdmin) return <main className="auth-screen"><a className="auth-brand" href="#">{data.brand}</a><p className="eyebrow">ESPACE PRIVÉ</p><h1>Administration.</h1><p className="auth-intro">Connectez-vous avec le compte administrateur autorisé pour gérer le site.</p><form className="auth-form" onSubmit={login}><label className="form-field"><span>Adresse e-mail</span><input type="email" autoComplete="username" value={loginEmail} onChange={e=>setLoginEmail(e.target.value)} required/></label><label className="form-field"><span>Mot de passe</span><input type="password" autoComplete="current-password" value={loginPassword} onChange={e=>setLoginPassword(e.target.value)} required/></label>{authError&&<p className="auth-error">{authError}</p>}<button className="btn dark full" type="submit">Se connecter</button></form><a className="auth-back" href="#" onClick={leaveAdmin}>← Retour au site</a></main>;
  if(admin) return <div className="admin-shell">
   <aside className="admin-side">
    <a className="admin-brand" href="#" onClick={leaveAdmin}>{data.brand}<small>STUDIO CONTROL</small></a>
@@ -86,7 +98,7 @@ function App() {
    <nav className="admin-nav">
     {[['content','Contenu éditorial'],['images','Images & identité'],['offers','Offres commerciales'],['style','Style & mise en page'],['contact','Contact & SEO']].map(([id,label])=><button key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}>{label}</button>)}
    </nav>
-   <div className="admin-side-bottom"><button className="btn dark full" onClick={save}><Save size={16}/> Enregistrer</button><button className="btn light full" onClick={leaveAdmin}><Eye size={16}/> Voir le site</button></div>
+   <div className="admin-side-bottom"><button className="btn dark full" onClick={save}><Save size={16}/> Enregistrer</button><button className="btn light full" onClick={leaveAdmin}><Eye size={16}/> Voir le site</button>{supabase&&<button className="btn light full" onClick={logout}>Déconnexion</button>}</div>
   </aside>
   <main className="admin-main">
    <header className="admin-top"><div><div className="eyebrow">ESPACE ADMINISTRATEUR</div><h1>Votre studio, vos règles.</h1><p>Gérez les textes, visuels, offres et réglages de votre vitrine.</p></div><button className="icon-button" onClick={reset} title="Réinitialiser"><RotateCcw size={18}/></button></header>
@@ -97,7 +109,7 @@ function App() {
    {tab==='style'&&<section className="editor-section"><h2>Style & mise en page</h2><p className="muted">Direction artistique Swiss editorial : grille stricte, typographie forte, espaces généreux et accent rouge discret.</p><div className="two-fields">{[['paper','Fond papier'],['ink','Texte principal'],['accent','Couleur accent']].map(([k,label])=><label className="form-field" key={k}><span>{label}</span><div className="color-input"><input type="color" value={data[k]} onChange={e=>change(k,e.target.value)}/><code>{data[k]}</code></div></label>)}</div><label className="form-field"><span>Police système</span><select value={data.font} onChange={e=>change('font',e.target.value)}><option>Arial</option><option>Helvetica</option><option>Georgia</option><option>Verdana</option></select></label><label className="form-field"><span>Largeur du contenu (px)</span><input type="number" min="900" max="1600" value={data.maxWidth} onChange={e=>change('maxWidth',e.target.value)}/></label><div className="toggle-list">{[['showDuo','Afficher la section duo'],['showOffers','Afficher les offres'],['showCase','Afficher le projet La Kasbah'],['showFit','Afficher “Cette offre est faite pour vous”']].map(([k,label])=><label key={k}><span>{label}</span><input type="checkbox" checked={data[k]==='true'} onChange={e=>change(k,String(e.target.checked))}/></label>)}</div><div className="mini-preview" style={{background:data.paper,color:data.ink}}><div className="eyebrow" style={{color:data.accent}}>APERÇU DES COULEURS</div><h3>{data.headline}</h3><button style={{background:data.accent,color:'#fff'}}>Bouton d’action ↗</button></div></section>}
    {tab==='contact'&&<section className="editor-section"><h2>Contact & référencement</h2><p className="muted">Renseignez uniquement les coordonnées et liens réels. Aucun numéro ou lien n’est prérempli.</p>{['whatsapp','bookingUrl','email','instagram'].map(k=><label className="form-field" key={k}><span>{fieldLabels[k]}</span><input value={data[k]} onChange={e=>change(k,e.target.value)} placeholder={k==='whatsapp'?'https://wa.me/…':k==='email'?'bonjour@…':'https://…'}/></label>)}<div className="form-field"><span>Référencement et partage</span><p className="muted small">Le titre et la description initiale sont définis dans index.html. Les champs de partage (image Open Graph, favicon et nom de site) sont préparés dans Images & identité ; leur publication dans les métadonnées du serveur devra être raccordée au déploiement.</p></div></section>}
    <div className="admin-actions"><button className="btn light" onClick={leaveAdmin}>Annuler / retour</button><button className="btn dark" onClick={save}><Save size={16}/> Enregistrer les modifications</button></div>
-   <p className="admin-footnote">Prototype d’administration côté navigateur : l’authentification sécurisée, la base de données partagée et l’upload serveur doivent être connectés avant une mise en production multi-utilisateur.</p>
+   <p className="admin-footnote">{supabase?"Connecté à Supabase : les modifications sont partagées après enregistrement. L’accès administrateur est contrôlé par app_metadata.role = admin et les politiques RLS.":"Mode local uniquement : les modifications restent dans ce navigateur. Configurez Supabase avec .env et appliquez la migration avant toute mise en production."}</p>
   </main>
  </div>;
  return <div className="site" style={{'--paper':data.paper,'--ink':data.ink,'--accent':data.accent,'--max':data.maxWidth+'px','--font':data.font}}>
