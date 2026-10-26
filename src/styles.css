@@ -6,3 +6,5 @@
 
 .project-slider-controls{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid #17171545;font:10px 'DM Mono',monospace;letter-spacing:.08em;color:#69665e}.project-slider-controls>div{display:flex;gap:8px}.project-slider-controls button{width:42px;height:42px;border:1px solid #17171555;background:transparent;color:var(--ink);font-size:24px;line-height:1}.project-slider-controls button:disabled{opacity:.25;cursor:not-allowed}.project-editor-head{display:flex;align-items:center;justify-content:space-between}.project-editor-head h3{margin:0}.project-editor-head .text-button{margin:0}
 @media(max-width:640px){.project-slider-controls button{width:46px;height:46px}}
+
+.project-upload-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.project-upload-preview{width:88px;height:68px;object-fit:cover;border:1px solid #d4d0c7}.project-instagram-link{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-size:11px;font-weight:800;border-bottom:1px solid #17171555;padding-bottom:7px}.project-instagram-link:hover{opacity:.65}
