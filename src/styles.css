@@ -12,3 +12,101 @@
 /* Extensions éditoriales — palette strictement limitée aux variables du site */
 .nav-pdf{background:var(--ink);color:var(--paper);padding:10px 12px;border-bottom:0}.skill-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-top:22px}.skill-item{display:flex;align-items:center;gap:9px;font-size:10px;line-height:1.5}.skill-icon{display:grid;place-items:center;flex:0 0 32px;height:32px;border:1px solid #17171555;color:var(--accent)}.person-socials{display:flex;gap:15px;flex-wrap:wrap;margin-top:18px}.person-socials a{font-size:10px;font-weight:800;border-bottom:1px solid #17171555;padding-bottom:4px}.fit-title{font-size:clamp(42px,5.8vw,76px);letter-spacing:-.075em;line-height:.98;margin:30px 0 40px}.fit-grid-check{grid-template-columns:1fr 1fr;gap:7%}.fit-grid-check .fit-column h3{display:flex;align-items:center;gap:9px}.fit-grid-check .fit-column:first-child h3 svg,.fit-grid-check .fit-column:first-child li svg{color:var(--accent)}.fit-grid-check .fit-column:last-child h3 svg,.fit-grid-check .fit-column:last-child li svg{color:var(--ink)}.fit-grid-check ul{list-style:none;padding:0;margin:20px 0}.fit-grid-check li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid #17171520;font-size:12px;line-height:1.6}.fit-grid-check li svg{flex:0 0 15px;margin-top:2px}.fit-grid-check .fit-column p{font-size:13px}.fit-grid-check .fit-column{padding:22px;border:1px solid #17171545}
 @media(max-width:640px){.skill-grid{gap:12px 8px}.skill-item{font-size:9px}.fit-grid-check{grid-template-columns:1fr;gap:18px}.fit-title{font-size:48px}.nav-pdf{align-self:flex-start}}
+
+
+/* Responsive hardening: prevent overflow at every viewport size */
+*,*::before,*::after{box-sizing:border-box}
+html,body,#root{width:100%;min-width:0;max-width:100%;margin:0}
+html{overflow-x:clip}
+body{overflow-x:clip}
+img,svg,video,canvas,iframe{max-width:100%}
+img,video,canvas{height:auto}
+.site,.admin-shell,.admin-main,.admin-side,.section-wrap,.wrap,
+.site-header,.nav,.hero,.hero-copy,.hero-visual,.duo,.duo-head,.people-grid,
+.person-card,.person-caption,.offers,.offer-grid,.offer-card,.case-study,
+.case-head,.case-gallery,.fit-section,.fit-grid,.fit-column,.contact-section,
+.contact-inner,.site-footer,.footer-links,.admin-top,.editor-section,
+.offer-editor,.form-field,.image-editor,.image-editor-fields,.mini-preview,
+.auth-screen,.auth-form{min-width:0;max-width:100%}
+h1,h2,h3,h4,p,a,button,label,span,small,li,code{overflow-wrap:anywhere}
+input,textarea,select,button{max-width:100%;min-width:0}
+textarea{white-space:pre-wrap}
+.hero,.duo-head,.section-heading,.case-head,.fit-grid,.people-grid,.offer-grid,
+.case-gallery,.site-footer,.admin-shell,.two-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+.hero>* ,.duo-head>* ,.section-heading>* ,.case-head>* ,.fit-grid>* ,
+.people-grid>* ,.offer-grid>* ,.case-gallery>* ,.site-footer>* ,.two-fields>*{min-width:0}
+.image-block{width:100%;max-width:100%;background-size:cover;background-position:center}
+.person-image,.hero-image,.case-img,.case-img-large{max-width:100%;min-width:0}
+.nav{flex-wrap:wrap;min-width:0}
+.nav a{min-width:0;max-width:100%}
+.skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.skill-item{min-width:0;overflow-wrap:anywhere}
+.skill-item>span:last-child{min-width:0}
+.person-socials{min-width:0;flex-wrap:wrap}
+.fit-grid-check{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fit-grid-check .fit-column{min-width:0}
+.footer-links{min-width:0;flex-wrap:wrap}
+.admin-nav{min-width:0}
+.admin-main{overflow-wrap:anywhere}
+.admin-top{gap:16px;min-width:0}
+.admin-actions{flex-wrap:wrap}
+.project-upload-row{min-width:0}
+.project-upload-preview{max-width:100%}
+@media(max-width:900px){
+ .admin-shell{grid-template-columns:220px minmax(0,1fr)}
+ .admin-main{padding-inline:clamp(16px,3vw,28px)}
+ .nav{gap:clamp(12px,2vw,24px)}
+ .fit-grid-check{gap:18px}
+}
+@media(max-width:640px){
+ .wrap,.section-wrap{width:calc(100% - 32px);max-width:100%}
+ .site-header{gap:12px}
+ .wordmark{min-width:0;max-width:calc(100% - 54px);overflow-wrap:anywhere}
+ .nav{width:100%;max-width:100%;left:0;right:0;padding-inline:16px}
+ .nav a{white-space:normal}
+ .hero{display:flex;min-width:0}
+ .hero-copy,.hero-visual{width:100%;min-width:0}
+ .hero h1{font-size:clamp(40px,12vw,68px);overflow-wrap:anywhere}
+ .hero-intro,.duo-head>p,.section-heading>p,.case-head>p,.contact-copy{overflow-wrap:anywhere}
+ .people-grid,.offer-grid,.duo-head,.section-heading,.case-head,.fit-grid,
+ .fit-grid-check,.case-gallery,.site-footer,.two-fields{grid-template-columns:minmax(0,1fr)}
+ .person-card,.offer-card,.fit-column{width:100%;min-width:0}
+ .person-offset{margin-top:0}
+ .skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .skill-icon{flex:0 0 28px;width:28px;height:28px}
+ .fit-grid-check .fit-column{padding:clamp(14px,4vw,22px)}
+ .case-img-large{grid-column:auto}
+ .site-footer p{justify-self:start}
+ .footer-links{justify-content:flex-start}
+ .admin-shell{display:block;width:100%;max-width:100%}
+ .admin-side{width:100%;max-width:100%;position:relative}
+ .admin-nav{display:flex;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+ .admin-nav button{flex:0 0 auto;white-space:nowrap}
+ .admin-main{width:100%;max-width:100%;padding:24px 16px}
+ .admin-top{align-items:flex-start;flex-wrap:wrap}
+ .admin-top h1{font-size:clamp(26px,8vw,34px);overflow-wrap:anywhere}
+ .editor-section{width:100%;max-width:100%}
+ .image-editor{grid-template-columns:minmax(0,95px) minmax(0,1fr)}
+ .image-editor-fields{min-width:0}
+ .image-editor-fields input{min-width:0}
+ .offer-editor{padding:clamp(12px,3.5vw,20px)}
+ .admin-side-bottom{flex-wrap:wrap}
+ .admin-side-bottom .btn{min-width:0}
+ .admin-actions{flex-direction:column-reverse}
+ .admin-actions .btn{width:100%}
+ .auth-screen{width:100%;padding-inline:24px}
+ .auth-form{width:100%;max-width:430px}
+ .fit-title{font-size:clamp(36px,10vw,48px);overflow-wrap:anywhere}
+ .project-slider-controls{gap:12px;flex-wrap:wrap}
+}
+@media(max-width:360px){
+ .wrap,.section-wrap{width:calc(100% - 24px)}
+ .hero h1{font-size:39px}
+ .skill-grid{grid-template-columns:minmax(0,1fr)}
+ .skill-item{font-size:10px}
+ .hero-actions,.contact-actions{width:100%}
+ .button-primary,.button-outline{max-width:100%;white-space:normal}
+ .admin-main{padding-inline:12px}
+ .image-editor{grid-template-columns:minmax(0,1fr)}
+ .image-editor-preview{width:100%;height:140px}
+}
