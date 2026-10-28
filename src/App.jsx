@@ -114,7 +114,8 @@ function App() {
    const sections=sectionIds.map(id=>document.getElementById(id)).filter(Boolean);
    if(!sections.length)return;
    const current=sections.reduce((best,section,index)=>Math.abs(section.getBoundingClientRect().top)<Math.abs(sections[best].getBoundingClientRect().top)?index:best,0);
-   const next=dx<0?Math.min(sections.length-1,current+1):Math.max(0,current-1);
+   if(dx<80)return; // Swipe vers la droite uniquement : retour
+   const next=Math.max(0,current-1);
    if(next!==current)sections[next].scrollIntoView({behavior:'smooth',block:'start'});
   };
   document.addEventListener('touchstart',onStart,{passive:true});
