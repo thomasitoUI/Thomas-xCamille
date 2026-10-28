@@ -98,6 +98,29 @@ function App() {
  const [authError,setAuthError] = useState('');
  const isAdmin = session?.user?.app_metadata?.role === 'admin';
  useEffect(()=>{const onHash=()=>setAdmin(window.location.hash==='#admin');window.addEventListener('hashchange',onHash);return()=>window.removeEventListener('hashchange',onHash)},[]);
+ useEffect(()=>{
+  let startX=0,startY=0;
+  const sectionIds=['top','approche','offres','projet','contact'];
+  const onStart=(event)=>{
+   if(event.touches.length!==1)return;
+   startX=event.touches[0].clientX;startY=event.touches[0].clientY;
+  };
+  const onEnd=(event)=>{
+   if(admin||event.changedTouches.length!==1)return;
+   const dx=event.changedTouches[0].clientX-startX,dy=event.changedTouches[0].clientY-startY;
+   if(Math.abs(dx)<80||Math.abs(dy)>60)return;
+   const target=event.target instanceof Element?event.target:null;
+   if(!target||target.closest('input,textarea,select,button,a,[contenteditable="true"],[role="dialog"],[data-no-swipe]'))return;
+   const sections=sectionIds.map(id=>document.getElementById(id)).filter(Boolean);
+   if(!sections.length)return;
+   const current=sections.reduce((best,section,index)=>Math.abs(section.getBoundingClientRect().top)<Math.abs(sections[best].getBoundingClientRect().top)?index:best,0);
+   const next=dx<0?Math.min(sections.length-1,current+1):Math.max(0,current-1);
+   if(next!==current)sections[next].scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  document.addEventListener('touchstart',onStart,{passive:true});
+  document.addEventListener('touchend',onEnd,{passive:true});
+  return()=>{document.removeEventListener('touchstart',onStart);document.removeEventListener('touchend',onEnd)};
+ },[admin]);
  useEffect(()=>{const title=data.brand.replace('THOMAS','Thomas').replace('CAMILLE','Camille')+' — Studio de contenu';document.title=title;const setMeta=(property,content)=>{let node=document.querySelector('meta[property="'+property+'"]');if(!node){node=document.createElement('meta');node.setAttribute('property',property);document.head.appendChild(node)}node.setAttribute('content',content||'')};setMeta('og:title',title);setMeta('og:description',data.intro);setMeta('og:image',data.ogImage);let icon=document.querySelector('link[rel~="icon"]');if(!icon){icon=document.createElement('link');icon.rel='icon';document.head.appendChild(icon)}if(data.faviconImage)icon.href=data.faviconImage;},[data.brand,data.intro,data.ogImage,data.faviconImage]);
  useEffect(()=>{if(!supabase){setAuthLoading(false);return;}let cancelled=false;supabase.auth.getSession().then(({data,error})=>{if(!cancelled){setSession(data?.session||null);setAuthLoading(false);if(error)setAuthError(error.message)}});const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,nextSession)=>setSession(nextSession));supabase.from('site_settings').select('settings').eq('id','main').maybeSingle().then(({data,error})=>{if(cancelled)return;if(data?.settings)setData({...initial,...data.settings});if(error)setNotice('Impossible de charger la configuration distante. Vérifiez la migration Supabase et les droits de lecture.');});return()=>{cancelled=true;subscription.unsubscribe()}},[]);
  const change=(key,value)=>{setData(prev=>({...prev,[key]:value}));setSaved(false)};
