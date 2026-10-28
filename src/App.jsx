@@ -100,7 +100,6 @@ function App() {
  useEffect(()=>{const onHash=()=>setAdmin(window.location.hash==='#admin');window.addEventListener('hashchange',onHash);return()=>window.removeEventListener('hashchange',onHash)},[]);
  useEffect(()=>{
   let startX=0,startY=0;
-  const sectionIds=['top','approche','offres','projet','contact'];
   const onStart=(event)=>{
    if(event.touches.length!==1)return;
    startX=event.touches[0].clientX;startY=event.touches[0].clientY;
@@ -108,15 +107,10 @@ function App() {
   const onEnd=(event)=>{
    if(admin||event.changedTouches.length!==1)return;
    const dx=event.changedTouches[0].clientX-startX,dy=event.changedTouches[0].clientY-startY;
-   if(Math.abs(dx)<80||Math.abs(dy)>60)return;
+   if(dx<80||Math.abs(dy)>60)return;
    const target=event.target instanceof Element?event.target:null;
    if(!target||target.closest('input,textarea,select,button,a,[contenteditable="true"],[role="dialog"],[data-no-swipe]'))return;
-   const sections=sectionIds.map(id=>document.getElementById(id)).filter(Boolean);
-   if(!sections.length)return;
-   const current=sections.reduce((best,section,index)=>Math.abs(section.getBoundingClientRect().top)<Math.abs(sections[best].getBoundingClientRect().top)?index:best,0);
-   if(dx<80)return; // Swipe vers la droite uniquement : retour
-   const next=Math.max(0,current-1);
-   if(next!==current)sections[next].scrollIntoView({behavior:'smooth',block:'start'});
+   window.history.back();
   };
   document.addEventListener('touchstart',onStart,{passive:true});
   document.addEventListener('touchend',onEnd,{passive:true});
