@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { ArrowDownRight, ArrowUpRight, Menu, X, Settings2, Eye, Save, RotateCcw, Plus, Trash2, Upload, Check, ExternalLink, Camera, Clapperboard, Palette, PenTool, HeartHandshake, MessagesSquare, Lightbulb, Users, Video, Instagram, Linkedin, Globe, Compass, Star, Target, MessageCircle, Smartphone, Monitor, Mic, Film, Brush, Handshake } from 'lucide-react';
+import { Send, ArrowDownRight, ArrowUpRight, Menu, X, Settings2, Eye, Save, RotateCcw, Plus, Trash2, Upload, Check, ExternalLink, Camera, Clapperboard, Palette, PenTool, HeartHandshake, MessagesSquare, Lightbulb, Users, Video, Instagram, Linkedin, Globe, Compass, Star, Target, MessageCircle, Smartphone, Monitor, Mic, Film, Brush, Handshake } from 'lucide-react';
 
 const supabase = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
   ? createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY)
