@@ -110,3 +110,5 @@ textarea{white-space:pre-wrap}
  .image-editor{grid-template-columns:minmax(0,1fr)}
  .image-editor-preview{width:100%;height:140px}
 }
+
+.ebook-offer .offer-card{max-width:680px;margin:0 auto}.ebook-buy-form{display:grid;gap:14px;margin-top:14px}.ebook-buy-form .form-field{margin:0}.ebook-buy-form .button-primary{width:fit-content}.ebook-notice{font-size:12px;line-height:1.6;color:#b63d2b}.ebook-buy-form button:disabled{opacity:.65;cursor:wait}.admin-nav button{line-height:1.4}
