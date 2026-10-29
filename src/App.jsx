@@ -178,5 +178,4 @@ function App() {
   <footer className="site-footer wrap"><a className="wordmark" href="#top">{data.brand}</a><p>{data.footer}</p><div className="footer-links">{data.instagram&&<a href={data.instagram} target="_blank" rel="noreferrer">Instagram ↗</a>}<button onClick={goAdmin}><Settings2 size={14}/> Administration</button><span>© {new Date().getFullYear()}</span></div></footer>
  </div>;
 }
-function ContactBubble({data}){
 export default App;
