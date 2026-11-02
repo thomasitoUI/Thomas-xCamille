@@ -216,3 +216,31 @@ textarea{white-space:pre-wrap}
   .skill-item{font-size:11px}
   .skill-icon{flex-basis:50px;width:50px;height:50px}
 }
+
+
+/* Réseaux sociaux — icônes de marque, finition premium */
+.person-socials{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:26px;
+}
+.person-socials-label{
+  margin-right:7px;color:rgba(23,23,21,.62);
+  font:700 10px 'DM Mono',monospace;letter-spacing:.11em;
+}
+.person-socials .social-icon-link{
+  display:grid;place-items:center;width:46px;height:46px;padding:0;
+  border:1px solid rgba(198,164,106,.72);border-radius:11px;
+  background:#c6a46a;color:#faf8f5;text-decoration:none;
+  transition:transform .2s ease,background .2s ease,border-color .2s ease;
+}
+.person-socials .social-icon-link:hover{
+  transform:translateY(-3px);background:var(--accent,#d74732);
+  border-color:var(--accent,#d74732);
+}
+.person-socials .social-icon-link:focus-visible{
+  outline:2px solid var(--accent);outline-offset:3px;
+}
+@media(max-width:640px){
+  .person-socials{gap:9px;margin-top:22px}
+  .person-socials .social-icon-link{width:44px;height:44px;border-radius:10px}
+  .person-socials-label{font-size:9px}
+}
