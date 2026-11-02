@@ -80,5 +80,18 @@ Deno.serve(async (req) => {
     return respond({ success: false, error: "Le rôle administrateur n’a pas pu être attribué. L’invitation a été annulée." }, 500);
   }
 
+  const { error: memberError } = await adminClient.from("team_members").upsert({
+    user_id: data.user.id,
+    email,
+    role: "admin",
+    status: "active",
+    invited_by: caller.id,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: "user_id" });
+  if (memberError) {
+    await adminClient.auth.admin.deleteUser(data.user.id);
+    return respond({ success: false, error: "Le compte a été créé, mais son inscription à l’équipe a échoué. L’invitation a été annulée." }, 500);
+  }
+
   return respond({ success: true });
 });
