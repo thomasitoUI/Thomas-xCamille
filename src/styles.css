@@ -447,3 +447,42 @@ textarea{white-space:pre-wrap}
  .lead-card-head{display:grid}
  .lead-details{gap:12px}
 }
+
+
+/* CTA unifiés — rectangles pleins dans la teinte ocre/terracotta du site */
+.button-primary,
+.button-outline,
+.nav-cta,
+.nav-pdf,
+.lead-submit{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  min-height:46px;
+  padding:13px 18px;
+  border:1px solid var(--accent,#d74732);
+  border-radius:0;
+  background:var(--accent,#d74732);
+  color:#fff;
+  font:700 12px Manrope,Arial,sans-serif;
+  text-decoration:none;
+  box-shadow:none;
+  transition:background .18s ease,border-color .18s ease,color .18s ease;
+}
+.button-primary:hover,
+.button-outline:hover,
+.nav-cta:hover,
+.nav-pdf:hover,
+.lead-submit:hover{
+  transform:none;
+  background:var(--ink,#171715);
+  border-color:var(--ink,#171715);
+  color:var(--paper,#f4f1e9);
+}
+.contact-section .button-outline{background:var(--accent,#d74732);border-color:var(--accent,#d74732);color:#fff}
+.button-primary:focus-visible,
+.button-outline:focus-visible,
+.nav-cta:focus-visible,
+.nav-pdf:focus-visible,
+.lead-submit:focus-visible{outline:2px solid var(--ink,#171715);outline-offset:3px}
