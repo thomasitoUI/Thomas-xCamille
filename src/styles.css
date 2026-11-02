@@ -520,3 +520,5 @@ textarea{white-space:pre-wrap}
   outline:2px solid var(--ink,#171715);
   outline-offset:3px;
 }
+
+.lead-entry-point{display:block;margin-top:7px;color:#817b70;font:9px 'DM Mono',monospace;letter-spacing:.08em;line-height:1.5}
