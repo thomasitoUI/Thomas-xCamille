@@ -255,3 +255,100 @@ textarea{white-space:pre-wrap}
 .team-member>div{display:grid;gap:5px;min-width:0}.team-member strong{font-size:14px;overflow-wrap:anywhere}.team-member>div span{font-size:12px;color:rgba(23,23,21,.62)}
 .team-status{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#48634d}.team-status.revoked{color:#8a5148}
 @media(max-width:640px){.team-panel{padding:17px}.team-panel-head{align-items:flex-start;flex-direction:column}.team-member{align-items:flex-start;flex-direction:column;gap:8px}}
+
+
+/* Studio Control — refonte de l’interface d’administration */
+.admin-shell{
+  background:#f5f3ee;
+  color:#20201d;
+}
+.admin-side{
+  background:#171816;
+  color:#f8f6f0;
+  border-right:1px solid rgba(255,255,255,.08);
+}
+.admin-brand{display:inline-flex;flex-direction:column;gap:8px;text-decoration:none;font-size:15px;letter-spacing:-.045em}
+.admin-brand small{font-size:9px;letter-spacing:.18em;color:#aaa99f}
+.admin-status{font-size:11px;color:#c9c7bf}
+.admin-nav{gap:4px}
+.admin-nav button{
+  border:0;border-radius:10px;padding:12px 13px;
+  color:#c9c7bf;background:transparent;font-size:12px;
+  font-weight:600;line-height:1.35;transition:background .18s ease,color .18s ease;
+  cursor:pointer;
+}
+.admin-nav button:hover{background:rgba(255,255,255,.07);color:#fff}
+.admin-nav button.active{background:rgba(198,164,106,.17);color:#e6c994;box-shadow:inset 2px 0 #c6a46a}
+.admin-side-bottom{gap:9px}
+.admin-side-bottom .btn{
+  min-height:44px;border-radius:10px;padding:11px 13px;
+  font-size:12px;font-weight:700;white-space:nowrap;
+  transition:transform .18s ease,background .18s ease,border-color .18s ease;
+  cursor:pointer;
+}
+.admin-side-bottom .btn:active{transform:scale(.98)}
+.admin-side-bottom .btn.dark{background:#c6a46a;color:#171816;border-color:#c6a46a}
+.admin-side-bottom .btn.dark:hover{background:#d6b77f}
+.admin-side-bottom .btn.light{background:rgba(255,255,255,.055);color:#f8f6f0;border-color:rgba(255,255,255,.2)}
+.admin-side-bottom .btn.light:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.38)}
+.admin-main{max-width:1440px}
+.admin-top{align-items:center}
+.admin-top h1{color:#20201d}
+.admin-top p,.muted{color:#77766f}
+.icon-button{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;cursor:pointer}
+.editor-section h2{font-size:26px}
+.form-field input,.form-field textarea,.form-field select{
+  border-radius:9px;background:#fff;border-color:#dedbd3;
+  padding:13px 14px;transition:border-color .18s,box-shadow .18s;
+}
+.form-field input:focus,.form-field textarea:focus,.form-field select:focus{
+  border-color:#b18b4d;box-shadow:0 0 0 3px rgba(198,164,106,.14);outline:0;
+}
+.btn{border-radius:9px;min-height:42px;cursor:pointer;transition:transform .18s,background .18s}
+.btn:active{transform:scale(.985)}
+.btn.dark{background:#1b1b19;color:#fff}
+.btn.light{background:#fff;border-color:#d8d4ca;color:#292824}
+.admin-actions .btn{min-height:46px;padding-inline:20px}
+.notice{border-radius:10px}
+.offer-editor,.team-panel{border-radius:12px}
+.team-member .btn{border-radius:9px}
+
+@media(max-width:640px){
+  .admin-shell{display:flex;flex-direction:column;min-height:100vh}
+  .admin-side{
+    position:relative;top:auto;height:auto;min-height:0;width:100%;
+    display:flex;flex-direction:column;gap:0;
+    padding:22px 18px 16px;border:0;border-radius:0 0 18px 18px;
+    box-shadow:0 12px 28px rgba(0,0,0,.12);
+  }
+  .admin-brand{font-size:16px;line-height:1.15}
+  .admin-brand small{margin-top:0}
+  .admin-status{margin:15px 0 17px;font-size:11px}
+  .admin-nav{
+    display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+    gap:7px;padding:0 0 13px;margin:0 -2px 13px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .admin-nav::-webkit-scrollbar{display:none}
+  .admin-nav button{
+    flex:0 0 auto;white-space:nowrap;width:auto;min-height:40px;
+    padding:10px 13px;border:1px solid rgba(255,255,255,.12);
+    border-radius:999px;font-size:12px;line-height:1;
+  }
+  .admin-nav button.active{border-color:rgba(198,164,106,.55);box-shadow:none}
+  .admin-side-bottom{
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;
+    margin:0;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);
+  }
+  .admin-side-bottom .btn{width:100%;min-width:0;min-height:46px;flex:none;font-size:12px;padding:10px 8px}
+  .admin-side-bottom .btn:first-child{grid-column:1/-1}
+  .admin-main{width:100%;max-width:none;padding:26px 18px 44px}
+  .admin-top{gap:14px;padding-bottom:20px;margin-bottom:24px}
+  .admin-top h1{font-size:clamp(27px,7vw,34px);line-height:1.05}
+  .admin-top p{font-size:12px}
+  .admin-top .eyebrow{font-size:9px;letter-spacing:.12em}
+  .editor-section{max-width:none}
+  .editor-section h2{font-size:23px}
+  .admin-actions{gap:9px}
+  .admin-actions .btn{min-height:48px}
+}
