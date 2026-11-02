@@ -112,3 +112,14 @@ textarea{white-space:pre-wrap}
 }
 
 .ebook-offer .offer-card{max-width:680px;margin:0 auto}.ebook-buy-form{display:grid;gap:14px;margin-top:14px}.ebook-buy-form .form-field{margin:0}.ebook-buy-form .button-primary{width:fit-content}.ebook-notice{font-size:12px;line-height:1.6;color:#b63d2b}.ebook-buy-form button:disabled{opacity:.65;cursor:wait}.admin-nav button{line-height:1.4}
+
+
+/* Lead generation and sales pipeline */
+.nav button.nav-cta{font:inherit;cursor:pointer}.nav button.nav-cta:hover{transform:translateY(-1px)}
+.lead-modal-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(17,17,17,.62);display:grid;place-items:center;padding:20px;overflow:auto}
+.lead-modal{position:relative;width:min(100%,620px);max-height:min(92vh,900px);overflow:auto;background:var(--paper,#f4f1e9);color:var(--ink,#171715);padding:clamp(26px,5vw,54px);box-shadow:0 24px 90px rgba(0,0,0,.25)}
+.lead-modal h2{font-size:clamp(32px,5vw,52px);line-height:1.02;letter-spacing:-.045em;margin:12px 42px 12px 0}.lead-modal>p:not(.eyebrow){line-height:1.6;max-width:48ch;color:rgba(23,23,21,.72)}
+.lead-modal-close{position:absolute;right:18px;top:18px;border:1px solid rgba(23,23,21,.2);background:transparent;width:40px;height:40px;display:grid;place-items:center;cursor:pointer}
+.lead-form{display:grid;gap:14px;margin-top:26px}.lead-form .form-field{margin:0}.lead-form input:not([type=checkbox]),.lead-form textarea{width:100%;box-sizing:border-box}.lead-consent{display:flex;align-items:flex-start;gap:10px;font-size:12px;line-height:1.5;color:rgba(23,23,21,.72)}.lead-consent input{margin-top:3px;accent-color:var(--accent)}.lead-consent a{text-decoration:underline;color:inherit}.lead-submit{width:100%;justify-content:center;margin-top:4px}.lead-submit:disabled{opacity:.55;cursor:not-allowed}.lead-feedback{font-size:13px;line-height:1.5}.lead-modal>.button-outline{margin-top:18px}
+.leads-list{display:grid;gap:12px;margin-top:22px}.lead-card{border:1px solid rgba(23,23,21,.16);padding:18px;background:rgba(255,255,255,.3)}.lead-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.lead-card h3{margin:6px 0;font-size:20px}.lead-card p{margin:8px 0;font-size:14px}.lead-card small{color:#777}.lead-card select{max-width:230px;padding:9px;border:1px solid rgba(23,23,21,.2);background:transparent;color:inherit}
+@media(max-width:760px){.lead-modal-backdrop{padding:10px;align-items:end}.lead-modal{max-height:94vh;padding:28px 22px}.lead-card-head{display:grid}.lead-card select{max-width:none;width:100%}}
