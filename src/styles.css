@@ -486,3 +486,37 @@ textarea{white-space:pre-wrap}
 .nav-cta:focus-visible,
 .nav-pdf:focus-visible,
 .lead-submit:focus-visible{outline:2px solid var(--ink,#171715);outline-offset:3px}
+
+
+/* CTA des cartes d'offres — même traitement que les boutons principaux */
+.site .offer-card .offer-link{
+  appearance:none;
+  -webkit-appearance:none;
+  width:100%;
+  min-height:46px;
+  margin-top:auto;
+  padding:13px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border:1px solid var(--accent,#d74732);
+  border-radius:0;
+  border-top:1px solid var(--accent,#d74732);
+  background:var(--accent,#d74732);
+  color:#fff;
+  font:700 12px Manrope,Arial,sans-serif;
+  text-align:left;
+  box-shadow:none;
+  transition:background .18s ease,border-color .18s ease,color .18s ease;
+}
+.site .offer-card .offer-link:hover{
+  background:var(--ink,#171715);
+  border-color:var(--ink,#171715);
+  color:var(--paper,#f4f1e9);
+  transform:none;
+}
+.site .offer-card .offer-link:focus-visible{
+  outline:2px solid var(--ink,#171715);
+  outline-offset:3px;
+}
