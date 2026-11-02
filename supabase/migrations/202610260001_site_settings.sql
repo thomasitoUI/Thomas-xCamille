@@ -42,8 +42,8 @@ on conflict (id) do nothing;
 
 -- Publicly readable image bucket; only admin-role users can write.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('site-media', 'site-media', true, 10485760, array['image/jpeg','image/png','image/webp','image/gif','image/svg+xml','image/avif'])
-on conflict (id) do update set public = true, file_size_limit = 10485760;
+values ('site-media', 'site-media', true, 20971520, array['image/jpeg','image/png','image/webp','image/gif','image/svg+xml','image/avif','application/pdf'])
+on conflict (id) do update set public = true, file_size_limit = 20971520, allowed_mime_types = array['image/jpeg','image/png','image/webp','image/gif','image/svg+xml','image/avif','application/pdf'];
 
 drop policy if exists "Public can read site media" on storage.objects;
 create policy "Public can read site media"
