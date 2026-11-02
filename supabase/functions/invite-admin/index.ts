@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
     data: { invited_as: "admin" },
   });
   if (error || !data.user) {
-    return respond({ success: false, error: error?.message ?? "Invitation non créée." }, 400);
+    return respond({ success: false, error: error?.message ?? "Invitation non créée." }, 200);
   }
 
   const existingMetadata = data.user.app_metadata ?? {};
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
   });
   if (roleError) {
     await adminClient.auth.admin.deleteUser(data.user.id);
-    return respond({ success: false, error: "Le rôle administrateur n’a pas pu être attribué. L’invitation a été annulée." }, 500);
+    return respond({ success: false, error: "Le rôle administrateur n’a pas pu être attribué. L’invitation a été annulée." }, 200);
   }
 
   const { error: memberError } = await adminClient.from("team_members").upsert({
@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
   }, { onConflict: "user_id" });
   if (memberError) {
     await adminClient.auth.admin.deleteUser(data.user.id);
-    return respond({ success: false, error: "Le compte a été créé, mais son inscription à l’équipe a échoué. L’invitation a été annulée." }, 500);
+    return respond({ success: false, error: "Le compte a été créé, mais son inscription à l’équipe a échoué. L’invitation a été annulée." }, 200);
   }
 
   return respond({ success: true });
