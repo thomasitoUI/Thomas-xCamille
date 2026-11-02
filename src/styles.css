@@ -244,3 +244,14 @@ textarea{white-space:pre-wrap}
   .person-socials .social-icon-link{width:44px;height:44px;border-radius:10px}
   .person-socials-label{font-size:9px}
 }
+
+
+/* Équipe & accès — espace d’administration */
+.team-panel{margin-top:28px;padding:22px;border:1px solid rgba(23,23,21,.16);background:rgba(255,255,255,.22)}
+.team-panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.team-panel-head h3{margin:0 0 5px;font-size:19px}.team-panel-head p{margin:0}
+.team-list{display:grid;gap:0;border-top:1px solid rgba(23,23,21,.13)}
+.team-member{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid rgba(23,23,21,.13)}
+.team-member>div{display:grid;gap:5px;min-width:0}.team-member strong{font-size:14px;overflow-wrap:anywhere}.team-member>div span{font-size:12px;color:rgba(23,23,21,.62)}
+.team-status{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#48634d}.team-status.revoked{color:#8a5148}
+@media(max-width:640px){.team-panel{padding:17px}.team-panel-head{align-items:flex-start;flex-direction:column}.team-member{align-items:flex-start;flex-direction:column;gap:8px}}
