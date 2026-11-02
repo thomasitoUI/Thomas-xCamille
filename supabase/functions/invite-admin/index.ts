@@ -63,25 +63,38 @@ Deno.serve(async (req) => {
   const adminClient = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
-    redirectTo: siteUrl,
-    data: { invited_as: "admin" },
-  });
-  if (error || !data.user) {
-    return respond({ success: false, error: error?.message ?? "Invitation non créée." }, 200);
+  // Rechercher d'abord un compte existant pour éviter le refus "already registered".
+  let targetUser = null;
+  for (let page = 1; page <= 20; page++) {
+    const { data: usersPage, error: listError } = await adminClient.auth.admin.listUsers({ page, perPage: 1000 });
+    if (listError) return respond({ success: false, error: "Impossible de vérifier les comptes existants : " + listError.message });
+    targetUser = usersPage.users.find((user) => user.email?.toLowerCase() === email) ?? null;
+    if (targetUser || usersPage.users.length < 1000) break;
   }
 
-  const existingMetadata = data.user.app_metadata ?? {};
-  const { error: roleError } = await adminClient.auth.admin.updateUserById(data.user.id, {
+  const existingAccount = Boolean(targetUser);
+  if (!targetUser) {
+    const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
+      redirectTo: siteUrl,
+      data: { invited_as: "admin" },
+    });
+    if (error || !data.user) {
+      return respond({ success: false, error: error?.message ?? "Invitation non créée." });
+    }
+    targetUser = data.user;
+  }
+
+  const existingMetadata = targetUser.app_metadata ?? {};
+  const { error: roleError } = await adminClient.auth.admin.updateUserById(targetUser.id, {
     app_metadata: { ...existingMetadata, role: "admin" },
   });
   if (roleError) {
-    await adminClient.auth.admin.deleteUser(data.user.id);
-    return respond({ success: false, error: "Le rôle administrateur n’a pas pu être attribué. L’invitation a été annulée." }, 200);
+    if (!existingAccount) await adminClient.auth.admin.deleteUser(targetUser.id);
+    return respond({ success: false, error: "Le rôle administrateur n’a pas pu être attribué : " + roleError.message });
   }
 
   const { error: memberError } = await adminClient.from("team_members").upsert({
-    user_id: data.user.id,
+    user_id: targetUser.id,
     email,
     role: "admin",
     status: "active",
@@ -89,8 +102,16 @@ Deno.serve(async (req) => {
     updated_at: new Date().toISOString(),
   }, { onConflict: "user_id" });
   if (memberError) {
-    await adminClient.auth.admin.deleteUser(data.user.id);
-    return respond({ success: false, error: "Le compte a été créé, mais son inscription à l’équipe a échoué. L’invitation a été annulée." }, 200);
+    if (!existingAccount) await adminClient.auth.admin.deleteUser(targetUser.id);
+    return respond({ success: false, error: "L’inscription dans l’équipe a échoué : " + memberError.message });
+  }
+
+  if (existingAccount) {
+    return respond({
+      success: true,
+      existing: true,
+      message: "Un compte existe déjà pour cette adresse. Les droits administrateur lui ont été attribués. La personne peut se connecter avec son compte existant.",
+    });
   }
 
   return respond({ success: true });
