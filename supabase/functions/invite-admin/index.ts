@@ -1,7 +1,13 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const PUBLIC_SITE_URL = "https://thomasitoui.github.io/Thomas-xCamille/";
+const configuredSiteUrl = Deno.env.get("SITE_URL")?.trim();
+const siteUrl = configuredSiteUrl && /^https:\/\//i.test(configuredSiteUrl) && !/localhost|127\.0\.0\.1/i.test(configuredSiteUrl)
+  ? configuredSiteUrl
+  : PUBLIC_SITE_URL;
+
 const corsHeaders = {
-  "Access-Control-Allow-Origin": Deno.env.get("SITE_URL") ?? "*",
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Max-Age": "86400",
@@ -57,9 +63,8 @@ Deno.serve(async (req) => {
   const adminClient = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const siteUrl = Deno.env.get("SITE_URL");
   const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
-    ...(siteUrl ? { redirectTo: siteUrl } : {}),
+    redirectTo: siteUrl,
     data: { invited_as: "admin" },
   });
   if (error || !data.user) {
