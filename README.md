@@ -1,4 +1,4 @@
-# Thomas × Camille — Studio de contenu
+# Camille × Thomas — Studio de contenu
 
 Landing page React/Vite, direction artistique éditoriale inspirée du Swiss Design et espace d’administration via `/#admin`.
 
